@@ -2,29 +2,33 @@ import {useReducer} from "react";
 
 const initialState = {
   result: "",
-  prevValue: null,
+  a: null,
+  b: null,
   operation: null,
   error: ""
  };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "ADD_NUMBER":
-      return { ...state, input: state.input + action.payload };
     case "set_value":
       console.log(state)
       console.log(action)
-      if(state.prevValue == null) {
+      if(state.operation == null) {
+        const a = state.a == null ? action.payload.value : state.a + "" + action.payload.value;
+
         return {
           ...state,
-          prevValue: action.payload.value,
-          result: action.payload.value,
+          a: a,
+          result: a,
           error: ""
         }
       } else {
+        const b = state.b == null ? action.payload.value : state.b + "" + action.payload.value;
+
         return {
           ...state,
-          result: action.payload.value,
+          b: b,
+          result: b,
           error: ""
         }
       }
@@ -36,17 +40,17 @@ const reducer = (state, action) => {
         result: ''
       };
     case "calculate":
-      if (state.prevValue !== null && state.result !== "") {
-        const currentValue = parseFloat(state.result);
-        let result = eval(`${state.prevValue}${state.operation}${currentValue}`);
+      if (state.a !== null && state.b !== null) {
+        let result = eval(`${state.a}${state.operation}${state.b}`);
         return {
           result: result.toString(),
-          prevValue: null,
+          a: result,
+          b: null,
           operation: null
         };
       }
       return state;
-    case "RESET":
+    case "reset":
       return initialState;
     default:
       return state;
